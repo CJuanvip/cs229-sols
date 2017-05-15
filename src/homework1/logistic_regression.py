@@ -4,16 +4,6 @@ import numpy.linalg as lin
 MAX_ITERS = 20
 EPSILON   = 1.0e-7
 
-fileX = 'logistic_x.txt'
-fileY = 'logistic_y.txt'
-
-
-def load_data(fileX, fileY):
-    X = np.loadtxt(fileX)
-    y = np.loadtxt(fileY)
-
-    return (X, y)
-
 
 def h(theta, X, y):
     margins = y * X.dot(theta)
@@ -61,20 +51,3 @@ def logistic_regression(X, y, epsilon, max_iters):
         theta   = theta - Hinv.dot(grad)
 
     return (theta, cost)
-
-
-def regression(epsilon=EPSILON, max_iters=MAX_ITERS):
-    X, y = load_data(fileX, fileY)
-    ones = np.ones((99,1))
-    Xsplit = np.split(X, indices_or_sections=[1], axis=1)
-    X = np.concatenate([ones, Xsplit[0], Xsplit[1]], axis=1)
-
-    return logistic_regression(X, y, epsilon, max_iters)
-
-
-
-def main():
-    theta, cost = regression()
-
-    print('theta = {}'.format(theta))
-    print('cost = {}'.format(cost))
