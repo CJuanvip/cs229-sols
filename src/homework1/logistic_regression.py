@@ -2,6 +2,7 @@ import numpy as np
 import numpy.linalg as lin
 
 MAX_ITERS = 20
+EPSILON   = 1.0e-7
 
 fileX = 'logistic_x.txt'
 fileY = 'logistic_y.txt'
@@ -44,7 +45,7 @@ def hessJ(theta, X, y):
     return hessJ
 
 
-def logistic_regression(X, y, max_iters):
+def logistic_regression(X, y, epsilon, max_iters):
     mm = X.shape[0]
     nn = X.shape[1]
 
@@ -61,18 +62,19 @@ def logistic_regression(X, y, max_iters):
 
     return (theta, cost)
 
-def run_regression(max_iters=MAX_ITERS):
+
+def regression(epsilon=EPSILON, max_iters=MAX_ITERS):
     X, y = load_data(fileX, fileY)
     ones = np.ones((99,1))
     Xsplit = np.split(X, indices_or_sections=[1], axis=1)
     X = np.concatenate([ones, Xsplit[0], Xsplit[1]], axis=1)
 
-    return logistic_regression(X, y, max_iters)
+    return logistic_regression(X, y, epsilon, max_iters)
 
 
 
 def main():
-    theta, cost = run_regression()
+    theta, cost = regression()
 
     print('theta = {}'.format(theta))
     print('cost = {}'.format(cost))
