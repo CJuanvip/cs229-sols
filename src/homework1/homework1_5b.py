@@ -23,7 +23,7 @@ def weightM(tau, Xtrain):
     size = Xtrain.shape[0]
     weights = {}
     for i in range(0, size):
-        weights[i] = weight(tau, Xtrain[i])
+        weights[i] = weight(tau, Xtrain[i, 1:])
 
     return WeightMatrix(weights)
 
@@ -40,4 +40,5 @@ class LWLRModel():
         y = self.ytrain
         theta = lin.inv((X.T.dot(W).dot(X))).dot(X.T).dot(W).dot(y)
 
-        return np.dot(theta.T, x)
+        return np.dot(theta.T, np.hstack((1, x)))
+        
