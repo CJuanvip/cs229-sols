@@ -6,7 +6,8 @@ import pandas as pd
 def linear_regression(X, y):
     return linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
 
-def main():
+
+def go():
     data = np.loadtxt('quasar_train.csv', delimiter=',')
     wavelengths = data[0]
     fluxes = data[1]
@@ -20,6 +21,10 @@ def main():
     X = pd.concat([df['xint'], df['wavelength']], axis=1)
     y = df['flux']
 
-    theta = linear_regression(X, y)
+    return linear_regression(X, y)
+
+
+def main():
+    theta = go()
 
     print('theta = {}'.format(theta))
