@@ -34,7 +34,7 @@ class LWLRModel():
         self.Xtrain = Xtrain
         self.ytrain = ytrain
 
-    def evaluate(self, x):
+    def __evaluate(self, x):
         W = self.W(x)
         X = self.Xtrain
         y = self.ytrain
@@ -42,14 +42,17 @@ class LWLRModel():
 
         return np.dot(theta.T, np.hstack((1, x)))
 
-    def __call__(self, vec):
+    def evaluate(self, vec):
         # First try treating vec as a vector
         try:
             results = np.zeros(len(vec))
             for i, vi in enumerate(vec):
-                results[i] = self.evaluate(vi)
+                results[i] = self.__evaluate(vi)
 
             return results
         except:
             # Otherwise, try treating it as a scalar.
-            return self.evaluate(vec)
+            return self.__evaluate(vec)
+
+    def __call__(self, vec):
+        return self.evaluate(vec)
