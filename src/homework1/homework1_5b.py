@@ -41,4 +41,15 @@ class LWLRModel():
         theta = lin.inv((X.T.dot(W).dot(X))).dot(X.T).dot(W).dot(y)
 
         return np.dot(theta.T, np.hstack((1, x)))
-        
+
+    def __call__(self, vec):
+        # First try treating vec as a vector
+        try:
+            results = np.zeros(len(vec))
+            for i, vi in enumerate(vec):
+                results[i] = self.evaluate(vi)
+
+            return results
+        except:
+            # Otherwise, try treating it as a scalar.
+            return self.evaluate(vec)
