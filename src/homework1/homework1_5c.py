@@ -117,7 +117,7 @@ def right(f, features):
 
     
 def left(f, features):
-    l = np.where(features == RIGHT_FREQ)
+    l = np.where(features == LEFT_FREQ)
     assert(l)
     return f[:,:l[0][0]]
 
@@ -168,3 +168,10 @@ class SpectrumEstimator():
         
     def __call__(self, x):
         return self.evaluate(x)
+
+
+def estimate_errors(m_eval_left, f_left, features):
+    return d_evaled(m_eval_left, f_left(features))
+
+def average_errors(m_eval_left, f_left, features):
+    return np.average(estimate_errors(m_eval_left, f_left, features))
