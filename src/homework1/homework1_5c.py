@@ -47,17 +47,7 @@ class SpectrumModel():
                 results[i, 0] = spec_i(x)
 
             return results
-        """
-        try:
-            results = np.zeros(len(x))
-            for i, xi in enumerate(x):
-                results[i] = self.__evaluate(xi)
 
-            return results
-        except:
-            # Otherwise, try treating it as a scalar.
-            return self.__evaluate(x)
-        """
     def __call__(self, x):
         return self.evaluate(x)
 
