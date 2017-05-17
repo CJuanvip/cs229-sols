@@ -13,10 +13,14 @@ class WeightMatrix():
     def __init__(self, weights):
         self.weights = weights
 
-    def __call__(self, x):
-        mat = np.eye(len(self.weights))
+    def __call__(self, x, out=None):
+        if out is None:
+            mat = np.eye(len(self.weights))
+        else:
+            mat = out
+
         for i in range(len(self.weights)):
-            mat[i, i]= self.weights[i](x)
+            mat[i, i] = self.weights[i](x)
 
         return mat
 
@@ -39,9 +43,10 @@ class LWLRModel():
         self.Xtrain = Xtrain
         self.ytrain = ytrain
         self.vevaluate = np.vectorize(self.__evaluate)
+        self.scratch = np.eye(len(W.weights))
 
     def __evaluate(self, x):
-        W = self.W(x)
+        W = self.W(x, out=self.scratch)
         X = self.Xtrain
         y = self.ytrain
         theta = lin.inv((X.T.dot(W).dot(X))).dot(X.T).dot(W).dot(y)
