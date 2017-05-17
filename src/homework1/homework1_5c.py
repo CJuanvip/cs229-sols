@@ -60,3 +60,4 @@ class SpectrumModel():
     def spectrums(self):
         return self._spectrums
 
+

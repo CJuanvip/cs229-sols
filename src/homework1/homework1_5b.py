@@ -36,15 +36,7 @@ def weightM(tau):
         return WeightMatrix(weights)
 
     return lambda Xtrain: go(Xtrain)
-"""
-def weightM(tau, Xtrain):
-    size = Xtrain.shape[0]
-    weights = {}
-    for i in range(0, size):
-        weights[i] = weight(tau, Xtrain[i, 1:])
 
-    return WeightMatrix(weights)
-"""
 
 class LWLRModel():
     def __init__(self, W, Xtrain, ytrain):
