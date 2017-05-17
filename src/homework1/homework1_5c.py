@@ -16,7 +16,7 @@ class SpectrumModel():
     """
     def __init__(self, data_set, features, weight_matrix):
         self._data_set = data_set
-        self._features = join_intercept(features.reshape(1, len(features)))
+        self._features = join_intercept(features.reshape(len(features), 1))
 
         spectrums = {}
         for i in range(0, len(data_set)):
@@ -39,21 +39,20 @@ class SpectrumModel():
         # First try treating x as a vector. If this succeeds we are evaluating pointwise.
         rows = len(self._spectrums)
         try:
-            rows = len(self._spectrums)
             cols = len(x)
 
             results = np.zeros((rows, cols))
 
-            for i in range(0, len(self._spectrums)):
-                for j in range(0, len(x)):
+            for i in range(0, rows):
+                for j in range(0, cols):
                     results[i, j] = self._spectrums[i](x[j])
 
             return results
         except:
             # Otherwise, try treating it as a scalar.
             results = np.zeros((rows, 1))
-            for i in range(0, len(self._spectrums)):
-                results[i, 0] = self._spectrums[i]([x])
+            for i in range(0, rows):
+                results[i, 0] = self._spectrums[i](x)
 
             return results
 
