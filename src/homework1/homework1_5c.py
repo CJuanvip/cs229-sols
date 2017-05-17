@@ -40,19 +40,16 @@ class SpectrumModel():
         rows = len(self._spectrums)
         try:
             cols = len(x)
-
             results = np.zeros((rows, cols))
-
             for i in range(0, rows):
-                for j in range(0, cols):
-                    results[i, j] = self._spectrums[i](x[j])
+                results[i] = self._spectrums[i](x)
 
             return results
         except:
             # Otherwise, try treating it as a scalar.
             results = np.zeros((rows, 1))
             for i in range(0, rows):
-                results[i, 0] = self._spectrums[i](x)
+                results[i] = self._spectrums[i](x)
 
             return results
 
