@@ -25,9 +25,6 @@ class SpectrumModel():
 
         self._spectrums = spectrums
 
-    def __call__(self, x):
-        return self.evaluate(x)
-
     def evaluate(self, x):
         """
         Evaluate takes an input vector of wavelengths X, and returns a matrix of 
@@ -53,4 +50,6 @@ class SpectrumModel():
     def spectrums(self):
         return self._spectrums
 
+    def __call__(self, x):
+        return self.evaluate(x)
 

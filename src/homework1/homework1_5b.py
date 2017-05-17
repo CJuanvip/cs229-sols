@@ -54,7 +54,6 @@ class LWLRModel():
         return np.dot(theta.T, np.hstack((1, x)))
 
     def evaluate(self, vec):
-        #return np.vectorize(self.__evaluate)(vec)
         return self.vevaluate(vec)
 
     def __call__(self, vec):
