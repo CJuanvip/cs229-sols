@@ -2,23 +2,32 @@ import numpy as np
 import homework1_5b as hm1b
 
 
+
+def join_intercept(mat):
+    ones = np.ones(((len(mat), 1)))
+
+    return np.concatenate((ones, mat), axis=1)
+
+
 class SpectrumModel():
     """
     The SpectrumModel type packs the smooths of each training example in a data set
     of light spectra together so the entire model can be evaluated conveniently.
     """
-    def __init__(data_set, features, weight_matrix, **kwargs):
+    def __init__(self, data_set, features, weight_matrix):
         self._data_set = data_set
-        self._features = features
+        self._features = join_intercept(features.reshape(1, len(features)))
 
         spectrums = {}
         for i in range(0, len(data_set)):
-            W_i = weight_matrix(kwargs, features)
+            W_i = weight_matrix(self._features)
             y_i = data_set[i]
-            spectrums[i] = hm1b.LWLRModel(W_i, features, y_i)
+            spectrums[i] = hm1b.LWLRModel(W_i, self._features, y_i)
 
         self._spectrums = spectrums
 
+    def __call__(self, x):
+        return self.evaluate(x)
 
     def evaluate(self, x):
         """
@@ -35,30 +44,20 @@ class SpectrumModel():
 
             results = np.zeros((rows, cols))
 
-            for i, spec_i in enumerate(self.spectrums):
-                for j, xj in enumerate(x):
-                    results[i, j] = spec_i(xj)
+            for i in range(0, len(self._spectrums)):
+                for j in range(0, len(x)):
+                    results[i, j] = self._spectrums[i](x[j])
 
             return results
         except:
             # Otherwise, try treating it as a scalar.
             results = np.zeros((rows, 1))
-            for i, spec_i in enumerate(self.spectrums):
-                results[i, 0] = spec_i(x)
+            for i in range(0, len(self._spectrums)):
+                results[i, 0] = self._spectrums[i]([x])
 
             return results
 
-    def __call__(self, x):
-        return self.evaluate(x)
+    @property 
+    def spectrums(self):
+        return self._spectrums
 
-
-"""
-data = np.loadtxt('quasar_train.csv', delimeter=',')
-Xtrain = data[0]
-data_set = data[1:]
-
-for i in range(1, len(data)+1):
-    Wi = hm1b.weightM(tau, Xtrain)
-    ytrain = data[i]
-    spectrums[i] = hm1b.LWLRModel(W, Xtrain, ytrain)
-"""

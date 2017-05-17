@@ -1,7 +1,13 @@
 import numpy as np
 import numpy.linalg as lin
 
+"""
+def weight(tau):
+    def go(Xtrain_i):
+        return lambda x: np.exp(-((x - Xtrain_i).T.dot(x - Xtrain_i))/(2*tau**2))
 
+    return lambda Xtrain_i: go(Xtrain_i)
+"""
 def weight(tau, Xtrain_i):
     return lambda x: np.exp(-((x - Xtrain_i).T.dot(x - Xtrain_i))/(2*tau**2))
 
@@ -18,7 +24,18 @@ class WeightMatrix():
 
         return mat
 
+"""
+def weightM(tau, Xtrain):
+    def go(Xtrain):
+        size = Xtrain.shape[0]
+        weights = {}
+        for i in range(0, size):
+            weights[i] = weight(tau)(Xtrain[i, 1:])
 
+        return WeightMatrix(weights)
+
+    return lambda Xtrain: go(Xtrain)
+"""
 def weightM(tau, Xtrain):
     size = Xtrain.shape[0]
     weights = {}
