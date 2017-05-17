@@ -7,17 +7,16 @@ def weight(tau):
         return lambda x: np.exp(-((x - Xtrain_i).T.dot(x - Xtrain_i))/(2*tau**2))
 
     return lambda Xtrain_i: go(Xtrain_i)
-    
+
 
 class WeightMatrix():
     def __init__(self, weights):
         self.weights = weights
 
     def __call__(self, x):
-        shape = (len(self.weights), len(self.weights))
-        mat = np.zeros(shape)
+        mat = np.eye(len(self.weights))
         for i in range(len(self.weights)):
-            mat[i, i] = self.weights[i](x)
+            mat[i, i]= self.weights[i](x)
 
         return mat
 
@@ -39,6 +38,7 @@ class LWLRModel():
         self.W = W
         self.Xtrain = Xtrain
         self.ytrain = ytrain
+        self.vevaluate = np.vectorize(self.__evaluate)
 
     def __evaluate(self, x):
         W = self.W(x)
@@ -49,16 +49,8 @@ class LWLRModel():
         return np.dot(theta.T, np.hstack((1, x)))
 
     def evaluate(self, vec):
-        # First try treating vec as a vector
-        try:
-            results = np.zeros(len(vec))
-            for i, vi in enumerate(vec):
-                results[i] = self.__evaluate(vi)
-
-            return results
-        except:
-            # Otherwise, try treating it as a scalar.
-            return self.__evaluate(vec)
+        #return np.vectorize(self.__evaluate)(vec)
+        return self.vevaluate(vec)
 
     def __call__(self, vec):
         return self.evaluate(vec)

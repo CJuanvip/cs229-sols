@@ -2,7 +2,6 @@ import numpy as np
 import homework1_5b as hm1b
 
 
-
 def join_intercept(mat):
     ones = np.ones(((len(mat), 1)))
 
