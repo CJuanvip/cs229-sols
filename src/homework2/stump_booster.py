@@ -36,11 +36,12 @@ def stump_booster(X, y, T):
 
     for t in range(T):
         index_t, threshold_t = fbt.find_best_threshold(X, y, p_dist)
-        feature_indices[t] = index_t
-        thresholds[t] = threshold_t
         Wplus     = p_dist.T.dot((y * np.sign(X[:, index_t] - threshold_t) == 1))
         Wminus    = p_dist.T.dot((y * np.sign(X[:, index_t] - threshold_t) == -1))
         theta_t   = 0.5 * np.log(Wplus / Wminus)
+        
+        feature_indices[t] = index_t
+        thresholds[t] = threshold_t
         thetas[t] = theta_t
         
         thresholds_per_example = np.repeat(thresholds.T, rows).reshape((rows,T))

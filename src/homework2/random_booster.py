@@ -29,6 +29,7 @@ def random_booster(X, y, T):
         Wplus     = p_dist.T.dot((y * np.sign(X[:, index_t] - threshold_t) == 1))
         Wminus    = p_dist.T.dot((y * np.sign(X[:, index_t] - threshold_t) == -1))
         theta_t   = 0.5 * np.log(Wplus / Wminus)
+        
         thetas[t] = theta_t
         feature_indices[t] = index_t
         thresholds[t] = threshold_t
