@@ -28,6 +28,7 @@ def stump_booster(X, y, T):
     """
     rows, cols = X.shape
     p_dist = (1 / rows) * np.ones(rows)
+    
     thetas = np.zeros(T)
     feature_indices = np.zeros(T, dtype='int')
     thresholds = np.zeros(T)
