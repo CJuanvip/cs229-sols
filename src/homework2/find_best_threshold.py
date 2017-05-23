@@ -10,15 +10,15 @@ def find_best_threshold(X, y, p_dist):
     weights ``p_dist`` on the training data. That is, the returned index ``ind``
     and threshold ``thresh`` minimize
 
-     sum_{i = 1}^m p(i) * 1{sign(X(i, ind) - thresh) ~= y(i)}
+     ``sum_{i = 1}^m p(i) * 1{sign(X(i, ind) - thresh) ~= y(i)}``
 
     OR
 
-     sum_{i = 1}^m p(i) * 1{sign(thresh - X(i, ind)) ~= y(i)}.
+     ``sum_{i = 1}^m p(i) * 1{sign(thresh - X(i, ind)) ~= y(i)}``.
 
     We must check both signed directions, as it is possible that the best
     decision stump (coordinate threshold classifier) is of the form
-    sign(threshold - x_j) rather than sign(x_j - threshold).
+    ``sign(threshold - x_j)`` rather than ``sign(x_j - threshold)``.
 
     The data matrix ``X`` is of size m-by-n, where m is the training set size
     and n is the dimension.
