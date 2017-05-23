@@ -28,7 +28,6 @@ def compute_errors_over_time(Xtrain,
     # Iteratively compute the margin predicted by the thresholded classifier,
     # updating both test and training predictions.
     for i in range(num_thresholds):
-        import sys
         train_predictions = train_predictions + \
             theta[i] * np.sign(Xtrain[:, feature_inds[i]] - thresholds[i])
         test_predictions = test_predictions + \

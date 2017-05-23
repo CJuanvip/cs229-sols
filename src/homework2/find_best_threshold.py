@@ -3,7 +3,7 @@ import numpy as np
 
 def find_best_threshold(X, y, p_dist):
     """
-    Finds the best threshold for the given data.
+    Findices the best threshold for the given data.
 
     The function ``find_best_threshold`` returns a threshold
     ``thresh`` and index ``ind`` that gives the best thresholded classifier for the
@@ -28,41 +28,40 @@ def find_best_threshold(X, y, p_dist):
     ``X`` is m-by-n.
     """
     rows, cols = X.shape
-    ind = 0
+    index = 0
     thresh = 0
     best_err = float('inf')
 
     for j in range(cols):
-        inds = np.argsort(X[:,j])[::-1]
-        x_sort = X[inds, j]
-        y_sort = y[inds]
-        p_sort = p_dist[inds]
+        indices = np.argsort(X[:,j])[::-1]
+        x_sort = X[indices, j]
+        y_sort = y[indices]
+        p_sort = p_dist[indices]
 
-        s = x_sort[0] + 1
         possible_thresholds = (x_sort + np.roll(x_sort, 1)) / 2
         possible_thresholds[0] = x_sort[0] + 1
 
-        increments = np.roll(p_sort * y_sort, 1)
+        increments    = np.roll(p_sort * y_sort, 1)
         increments[0] = 0
 
-        empirical_errors = np.ones((rows, 1)).T.dot((p_sort.T * (y_sort == 1)))
+        empirical_errors = np.ones(rows) * ((p_sort.T * (y_sort == 1)))
         empirical_errors = empirical_errors - np.cumsum(increments)
 
         thresh_index = np.argmin(empirical_errors)
-        best_low = empirical_errors[thresh_index]
+        best_low     = empirical_errors[thresh_index]
 
         thresh_high = np.argmax(empirical_errors)
-        best_high = empirical_errors[thresh_high]
+        best_high   = empirical_errors[thresh_high]
 
-        best_high = 1 - best_high
+        best_high  = 1 - best_high
         best_err_j = min(best_high, best_low)
 
         if best_high < best_low:
             thresh_index = thresh_high
 
         if best_err_j < best_err:
-            ind = j
+            index  = j
             thresh = possible_thresholds[thresh_index]
             best_err = best_err_j
 
-    return (ind, thresh)
+    return (index, thresh)
