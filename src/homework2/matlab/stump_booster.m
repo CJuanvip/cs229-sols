@@ -29,7 +29,7 @@ theta = [];
 feature_inds = [];
 thresholds = [];
 
-for iter = 1:T
+#for iter = 1:T
   [ind, thresh] = find_best_threshold(X, y, p_dist);
   feature_inds = [feature_inds; ind];
   thresholds = [thresholds; thresh];
