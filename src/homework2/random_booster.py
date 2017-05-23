@@ -3,6 +3,19 @@ import find_best_threshold as fbt
 
 
 def random_booster(X, y, T):
+    """
+    The function ``random_booster`` usses random thresholds and indices to train a 
+    classifier. It performs ``T`` rounds of boosted decision stumps to classify 
+    the data ``X``, which is an m-by-n matrix of m training examples in dimension n.
+    
+    The returned parameters are ``theta``, the parameter vector in ``T`` dimensions,
+    the feature_inds, which are indices of the features (a ``T``-dimensional vector
+    taking values in ``{1, 2, ..., n}``), and ``thresholds``, which are real-valued
+    thresholds. The resulting classifier may be computed on an n-dimensional
+    ``
+    theta' * sgn(x(feature_inds) - thresholds)
+    ``
+    """
     rows, cols = X.shape
     p_dist = (1 / rows) * np.ones(rows)
 
