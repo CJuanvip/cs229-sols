@@ -1,8 +1,5 @@
 import numpy as np
 
-EPSILON = 1e-7
-KCENTROIDS = 16
-MAX_ITERS = 200
 
 def initialize(image, kcentroids):
     height = image.shape[0]
@@ -17,20 +14,24 @@ def initialize(image, kcentroids):
     return centroids
 
 
-def kmeans(image, kcentroids, epsilon=EPSILON, max_iterations=MAX_ITERS):
-    centroids = initialize(kcentroids, image)
+def kmeans(image, kcentroids, max_iterations):
+    centroids = initialize(image, kcentroids)
     diffs = np.zeros(centroids.shape)
-    clusters = np.zeros(image.shape)
+    clusters = np.zeros(image.shape, dtype='int')
     height = image.shape[0]
     width = image.shape[1]
     for iter in range(max_iterations):
+        # TODO: Vectorize these loops.
         for i in range(height):
             for j in range(width):
                 diffs = image[i, j] - centroids
-                clusters[i, j] = np.argmin(np.linalg.norm(diffs, axis=1))
+                clusters[i, j] = int(np.argmin(np.linalg.norm(diffs, axis=1)))
 
-        for k in range(centroids.shape[0]):
-            total_k = np.sum(np.sign(clusters == k))
+        for k in range(kcentroids):
+            total_k = np.sum(1*(clusters == k))
             centroids[k] = (1 / total_k) * np.sum(image * (clusters == k))
 
-    return centroids
+    return clusters, centroids
+
+def make_image(clusters, centroids):
+    pass
