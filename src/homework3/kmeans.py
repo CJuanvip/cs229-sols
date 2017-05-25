@@ -25,10 +25,9 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
     diffs     = np.zeros(centroids.shape)
     clusters  = np.zeros((height, width, 1), dtype=int)
     new_centroids = np.zeros(centroids.shape)
-    centroid_diffs = centroids.copy()
+    centroid_delta = centroids.copy()
 
     for round in range(max_iterations):
-        print(round)
         for i in range(height):
             for j in range(width):
                 diffs = image[i, j] - centroids
@@ -39,8 +38,9 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
             total_k = np.sum(indicators)
             new_centroids[k] = (1 / total_k) * np.sum(indicators * image, axis=(1,0))
         
-        centroid_diffs = new_centroids - centroids
-        if np.all(np.linalg.norm(centroid_diffs) < epsilon):
+        # Test for convergence.
+        centroid_delta = new_centroids - centroids
+        if np.all(np.linalg.norm(centroid_delta) < epsilon):
             centroids = new_centroids.copy()
             break
         else:
@@ -52,9 +52,4 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
 
 
 def make_image(clusters, centroids):
-    new_image = np.zeros((clusters.shape[0], clusters.shape[1], 3))
-    for i in range(new_image.shape[0]):
-        for j in range(new_image.shape[1]):
-            new_image[i, j] = centroids[clusters[i,j,0]]
-
-    return new_image
+    return centroids[clusters[:,:,0]]
