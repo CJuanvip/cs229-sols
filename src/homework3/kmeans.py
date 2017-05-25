@@ -10,8 +10,8 @@ def initialize(image, kcentroids):
     centroids = np.zeros((kcentroids, 3))
 
     for k in range(kcentroids):
-        i = np.random.randint(low=0, high=width)
-        j = np.random.randint(low=0, high=height)
+        i = np.random.randint(height)
+        j = np.random.randint(width)
         centroids[k] = image[i, j]
 
     return centroids
@@ -27,11 +27,17 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
     new_centroids = np.zeros(centroids.shape)
     centroid_delta = centroids.copy()
 
-    for round in range(max_iterations):
+    # Initial clustering.
+    for i in range(height):
+        for j in range(width):
+            diffs = image[i, j] - centroids
+            clusters[i, j] = np.argmin(np.sum(diffs*diffs, axis=1))
+
+    for _ in range(max_iterations):
         for i in range(height):
             for j in range(width):
                 diffs = image[i, j] - centroids
-                clusters[i, j] = np.int(np.argmin(np.linalg.norm(diffs, axis=1)))
+                clusters[i, j] = np.argmin(np.sum(diffs*diffs, axis=1))
 
         for k in range(kcentroids):
             indicators = indicator(clusters == k)
@@ -45,19 +51,17 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
             break
         else:
             centroids = new_centroids.copy()
-        
-    centroids = np.uint(np.round(centroids))
+
+    centroids = np.uint8(np.round(centroids))
     
     return clusters, centroids
 
 
 def make_image(clusters, centroids):
-    """
     new_image = np.zeros((clusters.shape[0], clusters.shape[1], 3))
     for i in range(new_image.shape[0]):
         for j in range(new_image.shape[1]):
-            new_image[i, j] = centroids[clusters[i,j,0]]
+            new_image[i, j] = centroids[clusters[i, j]]
     
     return new_image
-    """
-    return centroids[clusters[:,:,0]]
+
