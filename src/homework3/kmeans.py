@@ -17,17 +17,18 @@ def initialize(image, kcentroids):
     return centroids
 
 
-def kmeans(image, kcentroids, max_iterations):
+def kmeans(image, kcentroids, epsilon, max_iterations):
     height = image.shape[0]
     width  = image.shape[1]
 
     centroids = initialize(image, kcentroids)
     diffs     = np.zeros(centroids.shape)
     clusters  = np.zeros((height, width, 1), dtype=int)
-    
-    print('CENTROIDS INIT = {}'.format(centroids))
+    new_centroids = np.zeros(centroids.shape)
+    centroid_diffs = centroids.copy()
 
     for round in range(max_iterations):
+        print(round)
         for i in range(height):
             for j in range(width):
                 diffs = image[i, j] - centroids
@@ -36,11 +37,15 @@ def kmeans(image, kcentroids, max_iterations):
         for k in range(kcentroids):
             indicators = indicator(clusters == k)
             total_k = np.sum(indicators)
-            centroids[k] = (1 / total_k) * np.sum(indicators * image, axis=(1,0))
-
-        import sys
-        print('ROUND = {}\nCENTROIDS = {}'.format(round, centroids))
-
+            new_centroids[k] = (1 / total_k) * np.sum(indicators * image, axis=(1,0))
+        
+        centroid_diffs = new_centroids - centroids
+        if np.all(np.linalg.norm(centroid_diffs) < epsilon):
+            centroids = new_centroids.copy()
+            break
+        else:
+            centroids = new_centroids.copy()
+        
     centroids = np.uint(np.round(centroids))
     
     return clusters, centroids
