@@ -52,4 +52,12 @@ def kmeans(image, kcentroids, epsilon, max_iterations):
 
 
 def make_image(clusters, centroids):
+    """
+    new_image = np.zeros((clusters.shape[0], clusters.shape[1], 3))
+    for i in range(new_image.shape[0]):
+        for j in range(new_image.shape[1]):
+            new_image[i, j] = centroids[clusters[i,j,0]]
+    
+    return new_image
+    """
     return centroids[clusters[:,:,0]]
