@@ -42,7 +42,7 @@ def analyze(mixes):
         for i in range(m):
             x = mix[order[i], :].T
             g = 1 / (1 + np.exp(-W.dot(x)))
-            W = W + anneal[round] * ((1 - 2 * g).dot(x.T.dot(np.inv(W.T))))
+            W = W + anneal[round] * ((1 - 2 * g).outer(x.T) + np.inv(W.T))
 
     return W
 
