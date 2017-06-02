@@ -19,7 +19,7 @@ def cart_pole(action, x, x_dot, theta, theta_dot):
     force_noise_factor = 0.0   # multiplied by between 1-.. and 1+.. 
     no_control_prob    = 0.00  # Force is 0 with this probability
 
-    action = action - 1
+    # action = action - 1
 
     # Flip action with action_flip_prob
     if rand.random(1) < action_flip_prob:

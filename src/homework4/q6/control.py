@@ -143,9 +143,6 @@ def simulate():
     #### END YOUR CODE ############################
 
 
-
-
-
     ### CODE HERE (while loop condition) ###
     # This is the criterion to end the simulation
     # You should change it to terminate when the previous
@@ -154,11 +151,12 @@ def simulate():
     # like there will be little learning after this, so end the simulation
     # here, and say the overall algorithm has converged. 
 
-    while num_failures < max_failures:
-        # while (number of consecutive no learning trials < NO_LEARNING_THRESHOLD)
+    consecutive_no_learning_trials = 0
+    # while num_failures < max_failures:
+    while number of consecutive no learning trials < NO_LEARNING_THRESHOLD:
 
 
-        ### CODE HERE: Write code to choose action (1 or 2) ###
+        ### CODE HERE: Write code to choose action (0 or 1) ###
 
         # This action choice algorithm is just for illustration. It may
         # convince you that reinforcement learning is nice for control
@@ -166,18 +164,28 @@ def simulate():
         # optimal according to the current value function, and the current MDP
         # model.
         # if theta < 0:
-        #     action = 1
+        #     action = 0
         # else:
-        #     action = 2
+        #     action = 1
         #
         #if num_failures<-20
         #  if (rand(1) < 0.5)
-        #    action=1;
+        #    action=0;
         #  else
-        #    action=2;
+        #    action=1;
         #
-
-
+        score0 = transition_probabilities[state, :, 0].dot(value)
+        score1 = transition_probabilities[state, :, 1].dot(value)
+        
+        if score0 > score1:
+            action = 0
+        elif score1 > score0:
+            action = 1
+        else:
+            if rand.random() < 0.5:
+                action = 0
+            else:
+                action = 1
         ### END YOUR CODE ####################################
   
 
@@ -209,7 +217,9 @@ def simulate():
         # information you are storing on the transitions and on the rewards
         # observed. Do not change the actual MDP parameters, except when the
         # pole falls (the next if block)!
-
+        transition_counts[state, new_state, action] = transition_counts[state, new_state, action] + 1
+        reward_counts[new_state, 0] = reward_counts[new_state, 0] + R
+        reward_counts[new_state, 1] = reward_counts[new_state, 1] + 1
 
   
         # Recompute MDP model whenever pole falls
@@ -222,22 +232,44 @@ def simulate():
             # state-action pair has never been tried before, or the state has
             # never been visited before. In that case, you must not change that
             # component (and thus keep it at the initialized uniform distribution).
+            for s in range(NUM_STATES):
+                for a in range(2):
+                    count = np.sum(transition_counts[s, :, a])
+                    if count > 0:
+                        transition_probabilities[s, :, a] = transition_counts[s, :, a] / count
 
-
+            for s in range(NUM_STATES):
+                if reward_counts[s, 1] > 0:
+                    reward[s] = reward_counts[s, 0] / reward_counts[s, 1]
     
             # Perform value iteration using the new estimated model for the MDP
             # The convergence criterion should be based on TOLERANCE as described
             # at the top of the file.
             # If it converges within one iteration, you may want to update your
             # variable that checks when the whole simulation must end
+            iterations = 0
+            new_value = np.zeros((NUM_STATES, 1))
+            while True:
+                iterations += 1
+                for s in range(NUM_STATES):
+                    value0 = transition_probs[s, :, 0].dot(value)
+                    value1 = transition_probs[s, :, 1].dot(value)
+                    new_value[s] = np.max((value0, value1))
 
+                new_value = reward + GAMMA * new_value
+                diff = np.max(np.abs(value - new_value))
+                value = new_value
+                if diff < TOLERANCE:
+                    break
+
+                if iterations == 1:
+                    consecutive_no_learning_trials += 1
+                else:
+                    consecutive_no_learning_trials = 0
 
             # pause(0.2); % You can use this to stop for a while!
-    
-    
 
         ### END YOUR CODE ######################
-  
 
         # Dont change this code: Controls the simulation, and handles the case
         # when the pole fell and the state must be reinitialized
