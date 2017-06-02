@@ -37,8 +37,7 @@ observations that you have gathered to generate a new model for the MDP
 must use value iteration to get the optimal value function for this MDP
 model.
 
-TOLERANCE: Controls the convergence criteria for each value iteration
-run
+TOLERANCE: Controls the convergence criteria for each value iteration run.
 In the value iteration, you can assume convergence when the maximum
 absolute change in the value function at any state in an iteration
 becomes lower than TOLERANCE.
@@ -71,6 +70,7 @@ really need to know about them:
 
 pause_time: Controls the pause between successive frames of the
 display. Higher values make your simulation slower.
+
 min_trial_length_to_start_display: Allows you to start the display only
 after the pole has been successfully balanced for at least this many
 trials. Setting this to zero starts the display immediately. Choosing a
@@ -135,7 +135,11 @@ def simulate():
     # transitioning for state x to state y using action a is exactly
     # 1/NUM_STATES). Initialize all state rewards to zero.
 
-
+    transition_counts = np.zeros((NUM_STATES, NUM_STATES, 2))
+    transition_probabilities = np.ones((NUM_STATES, NUM_STATES, 2)) / NUM_STATES
+    reward_coounts = np.zeros((NUM_STATES, 2))
+    reward = np.zeros((NUM_STATES, 1))
+    value = 0.1 * rand.random((NUM_STATES, 1))
     #### END YOUR CODE ############################
 
 
