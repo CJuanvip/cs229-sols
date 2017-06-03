@@ -40,7 +40,7 @@ def cart_pole(action, x, x_dot, theta, theta_dot):
 
     temp = (force + POLEMASS_LENGTH * theta_dot * theta_dot * sintheta) / TOTAL_MASS
 
-    thetaacc = (GRAVITY * sintheta - costheta * temp) / 
+    thetaacc = (GRAVITY * sintheta - costheta * temp) / \
                (LENGTH * (FOURTHIRDS - MASSPOLE * costheta * costheta / TOTAL_MASS))
 
     xacc  = temp - POLEMASS_LENGTH * thetaacc* costheta / TOTAL_MASS

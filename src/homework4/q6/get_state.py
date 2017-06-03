@@ -31,8 +31,8 @@ def get_state(x, x_dot, theta, theta_dot):
             state = 2
   
         # Check the state of x_dot.
-        if x_dot < -0.5:                
-            # No change
+        if x_dot < -0.5:
+            state = state # No change
         elif x_dot < 0.5:
             state = state + 3
         else:
@@ -40,7 +40,7 @@ def get_state(x, x_dot, theta, theta_dot):
      
         # Check the state of theta.
         if theta < -six_degrees:  
-            # No change
+            state = state # No change
         elif theta < -one_degree:
             state = state + 9
         elif theta < 0:
@@ -54,13 +54,13 @@ def get_state(x, x_dot, theta, theta_dot):
         
         # Check the state of theta_dot.
         if theta_dot < -fifty_degrees:
-            # No change
+            state = state # No change
         elif theta_dot < fifty_degrees:  
             state = state + 54
         else:
             state = state + 108  
 
-
-    state = state + 1
+    # This is because of MATLAB indexing.
+    # state = state + 1
 
     return state

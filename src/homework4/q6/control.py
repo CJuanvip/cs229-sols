@@ -137,7 +137,7 @@ def simulate():
 
     transition_counts = np.zeros((NUM_STATES, NUM_STATES, 2))
     transition_probabilities = np.ones((NUM_STATES, NUM_STATES, 2)) / NUM_STATES
-    reward_coounts = np.zeros((NUM_STATES, 2))
+    reward_counts = np.zeros((NUM_STATES, 2))
     reward = np.zeros((NUM_STATES, 1))
     value = 0.1 * rand.random((NUM_STATES, 1))
     #### END YOUR CODE ############################
@@ -153,7 +153,7 @@ def simulate():
 
     consecutive_no_learning_trials = 0
     # while num_failures < max_failures:
-    while onsecutive_no_learning_trials < NO_LEARNING_THRESHOLD:
+    while consecutive_no_learning_trials < NO_LEARNING_THRESHOLD:
 
 
         ### CODE HERE: Write code to choose action (0 or 1) ###
