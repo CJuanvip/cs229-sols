@@ -153,7 +153,7 @@ def simulate():
 
     consecutive_no_learning_trials = 0
     # while num_failures < max_failures:
-    while consecutive_no_learning_trials < NO_LEARNING_THRESHOLD:
+    while (consecutive_no_learning_trials < NO_LEARNING_THRESHOLD) and (num_failures < max_failures):
 
 
         ### CODE HERE: Write code to choose action (0 or 1) ###
