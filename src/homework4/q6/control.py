@@ -94,6 +94,7 @@ def simulate():
     display_started = 0
 
     NUM_STATES = 163
+    FAILED_STATE = NUM_STATES - 1
     GAMMA = 0.995
     TOLERANCE = 0.01
     NO_LEARNING_THRESHOLD = 20
@@ -102,14 +103,14 @@ def simulate():
     # Time cycle of the simulation.
     time = 0
 
-    # These variables perform bookkeeping (how many cycles was the pole
-    # balanced for before it fell). Useful for plotting learning curves.
-    time_steps_to_failure = []
-    num_failures = 0
-    time_at_start_of_current_trial = 0
-
     # You should reach convergence well before this.
     max_failures = 500
+
+    # These variables perform bookkeeping (how many cycles was the pole
+    # balanced for before it fell). Useful for plotting learning curves.
+    time_steps_to_failure = np.zeros((max_failures, 1))
+    num_failures = 0
+    time_at_start_of_current_trial = 0
 
     # Starting state is (0 0 0 0)
     # x, x_dot, theta, theta_dot represents the actual continuous state vector
@@ -154,10 +155,8 @@ def simulate():
     consecutive_no_learning_trials = 0
     # while num_failures < max_failures:
     while (consecutive_no_learning_trials < NO_LEARNING_THRESHOLD) and (num_failures < max_failures):
-
-
         ### CODE HERE: Write code to choose action (0 or 1) ###
-
+        
         # This action choice algorithm is just for illustration. It may
         # convince you that reinforcement learning is nice for control
         # problems!  Replace it with your code to choose an action that is
@@ -188,7 +187,6 @@ def simulate():
                 action = 1
         ### END YOUR CODE ####################################
   
-
         # Get the next state by simulating the dynamics
         (x, x_dot, theta, theta_dot) = cp.cart_pole(action, x, x_dot, theta, theta_dot)
 
@@ -202,12 +200,11 @@ def simulate():
             sc.show_cart(x, x_dot, theta, theta_dot, pause_time)
   
         # Reward function to use - do not change this!
-        if new_state == NUM_STATES:
+        if new_state == FAILED_STATE: # NUM_STATES - 1
             R = -1
         else:
-            # R = -abs(theta) / 2.0
+            # R = -np.abs(theta) / 2.0
             R = 0
-
 
         ### CODE HERE: Perform updates ##########
 
@@ -221,19 +218,17 @@ def simulate():
         reward_counts[new_state, 0] = reward_counts[new_state, 0] + R
         reward_counts[new_state, 1] = reward_counts[new_state, 1] + 1
 
-  
         # Recompute MDP model whenever pole falls
         # Compute the value function V for the new model
-        if new_state == NUM_STATES:
-
+        if new_state == FAILED_STATE: # NUM_STATES - 1
             # Update MDP model using the current accumulated statistics about the
             # MDP - transitions and rewards.
             # Make sure you account for the case when total_count is 0, i.e., a
             # state-action pair has never been tried before, or the state has
             # never been visited before. In that case, you must not change that
             # component (and thus keep it at the initialized uniform distribution).
-            for s in range(NUM_STATES):
-                for a in range(2):
+            for a in range(2):
+                for s in range(NUM_STATES):
                     count = np.sum(transition_counts[s, :, a])
                     if count > 0:
                         transition_probabilities[s, :, a] = transition_counts[s, :, a] / count
@@ -252,20 +247,20 @@ def simulate():
             while True:
                 iterations += 1
                 for s in range(NUM_STATES):
-                    value0 = transition_probs[s, :, 0].dot(value)
-                    value1 = transition_probs[s, :, 1].dot(value)
+                    value0 = transition_probabilities[s, :, 0].dot(value)
+                    value1 = transition_probabilities[s, :, 1].dot(value)
                     new_value[s] = np.max((value0, value1))
 
                 new_value = reward + GAMMA * new_value
                 diff = np.max(np.abs(value - new_value))
-                value = new_value
+                value = new_value.copy()
                 if diff < TOLERANCE:
                     break
 
-                if iterations == 1:
-                    consecutive_no_learning_trials += 1
-                else:
-                    consecutive_no_learning_trials = 0
+            if iterations == 1:
+                consecutive_no_learning_trials += 1
+            else:
+                consecutive_no_learning_trials = 0
 
             # pause(0.2); % You can use this to stop for a while!
 
@@ -273,12 +268,10 @@ def simulate():
 
         # Dont change this code: Controls the simulation, and handles the case
         # when the pole fell and the state must be reinitialized
-        if new_state == NUM_STATES:
-            num_failures = num_failures + 1
+        if new_state == FAILED_STATE: # NUM_STATES - 1
             time_steps_to_failure[num_failures] = time - time_at_start_of_current_trial
             time_at_start_of_current_trial = time
-
-            # time_steps_to_failure(num_failures)
+            # time_steps_to_failure[num_failures]
 
             if time_steps_to_failure[num_failures] > min_trial_length_to_start_display:
                 display_started = 1
@@ -290,9 +283,9 @@ def simulate():
             theta = 0.0
             theta_dot = 0.0
             state = gs.get_state(x, x_dot, theta, theta_dot)
+
+            num_failures += 1
         else:
             state = new_state
 
-
-    # Plot the learning curve (time balanced vs trial)
-    plc.plot_learning_curve(time_steps_to_failure)
+    return (num_failures, time_steps_to_failure)
