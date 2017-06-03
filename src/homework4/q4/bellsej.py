@@ -10,20 +10,28 @@ def load_data(handle):
     return np.loadtxt(handle)
 
 def normalize_mix(mix):
-    rows = mix.shape[0]
+    return 0.99 * mix / (np.ones(mix.shape[0]) * np.max(np.abs(mix)))
 
-    return 0.99 * mix / (np.ones((rows,1)) * np.max(np.abs(mix)))
+def normalize_mixes(mixes):
+    mix_count = mixes.shape[1]
+    normalized_mixes = np.zeros(mixes.shape)
+
+    for i in range(mix_count):
+        mixes[:, i] = normalize_mix(mixes[:, i])
+
+    return normalized_mixes
 
 
 def split_and_normalize_mixes(mixes):
-    nsamples, mix_count = mixes.shape
+    mix_count = mixes.shape[1]
+    normalized_mixes = np.zeros(mixes.shape)
 
     for i in range(mix_count):
-        normalized_mix = normalize_mix(mixes[:, i])
+        normalized_mixes[:, i] = normalize_mix(mixes[:, i])
         mix_name = 'mix{}.wav'.format(i)
-        wav.write(mix_name, Fs, normalized_mix)
+        wav.write(mix_name, Fs, normalized_mixes[:, i])
 
-    return nsamples, mix_count
+    return normalized_mixes
 
 
 def analyze(mixes):
@@ -37,28 +45,18 @@ def analyze(mixes):
     W = np.eye(mix_count)
 
     for round in range(len(anneal)):
-        m = mix.shape[0]
-        order = np.permutation(m)
+        m = mixes.shape[0]
+        order = np.random.permutation(m)
         for i in range(m):
-            x = mix[order[i], :].T
+            x = mixes[order[i], :].T
             g = 1 / (1 + np.exp(-W.dot(x)))
-            W = W + anneal[round] * ((1 - 2 * g).outer(x.T) + np.inv(W.T))
+            W = W + anneal[round] * (np.outer((1 - 2 * g), x.T) + np.linalg.inv(W.T))
 
     return W
 
-
-def normalize_source(source):
-    rows = mix.shape[0]
-
-    return 0.99 * source / (np.ones((rows,1)) * np.max(np.abs(source)))
-
-
-def write_sources(sources):
-    nsamples, source_count = sources.shape
-
-    for i in range(source_count):
-        normalized_source = normalize_source(sources[:, i])
-        source_name = 'unmix{}.wav'.format(i)
-        wav.write(source_name, Fs, normalized_source)
-
-    return nsamples, source_count
+def write_mixes(unmixes):
+    nsamples, unmix_count = unmixes.shape
+    
+    for i in range(unmix_count):
+        unmix_name = 'unmix{}.wav'.format(i)
+        wav.write(unmix_name, Fs, unmixes[:, i])
