@@ -13,16 +13,16 @@ def train(df_train):
 
 class NaiveBayes:
     def __init__(self, X, y, tokenlist):
-        m = y.shape[0]
+        num_train_docs = y.shape[0]
         word_count = X.shape[1]
         absV    = word_count
         denom_0 = np.sum(X[y == 0], axis=(0,1)) + absV
         denom_1 = np.sum(X[y == 1], axis=(0,1)) + absV
 
         dfp = np.zeros((2, word_count))
-        # Compute the probability that a training email is spam.
-        prior_0 = np.sum(y == 0) / m
-        prior_1 = np.sum(y == 1) / m
+        # Compute the prior probability that a training email is spam.
+        prior_0 = np.sum(y == 0) / num_train_docs
+        prior_1 = np.sum(y == 1) / num_train_docs
 
         # Compute the conditional probabilities.
         for k in range(word_count):
