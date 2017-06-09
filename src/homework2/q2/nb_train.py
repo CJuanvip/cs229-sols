@@ -10,9 +10,9 @@ def train(df):
 
 class NaiveBayes:
     def __init__(self, df):
-        self.dfp = self.nb_train(df)
+        self.dfp = self.train(df)
 
-    def nb_train(self, df):
+    def train(self, df):
         category = df.iloc[:, 0].as_matrix()
         X = df.iloc[:, 1:].as_matrix()
         m = df.shape[0]
@@ -22,8 +22,10 @@ class NaiveBayes:
         denom_1 = np.sum(X[category == 1], axis=(0,1)) + absV
 
         dfp = pd.DataFrame(np.zeros((2, df.shape[1])), columns=df.columns)
+        # Compute the probability that a training email is spam.
         phi_0 = np.sum(category == 0) / m
         phi_1 = np.sum(category == 1) / m
+        # Pack them into the first column.
         dfp.iloc[0,0] = phi_0
         dfp.iloc[1,0] = phi_1
 
@@ -35,10 +37,31 @@ class NaiveBayes:
             dfp.iloc[0, k] = phi_k_0
             dfp.iloc[1, k] = phi_k_1
 
-        self.dfp = dfp
+        return dfp
 
-    def classify(self, df):
+    def classify(self, x):
         """
-        Given a vector of emails on a trained model, classify them.
+        Given a preprocessed email, classify it as SPAM or NOT SPAM.
         """
-        pass
+        prob_y_equals_0 = self.dfp.iloc[0,0]
+        prob_y_equals_1 = self.dfp.iloc[1,0]
+        probs_x_given_0 = self.dfp.as_matrix()[0, np.where(x != 0)]
+        probs_x_given_0 = probs_x_given_0.reshape(probs_x_given_0.shape[1])
+        probs_x_given_1 = self.dfp.as_matrix()[1, np.where(x != 0)]
+        probs_x_given_1 = probs_x_given_1.reshape(probs_x_given_1.shape[1])
+        
+        probs_0 = np.power(prob_y_equals_0 * probs_x_given_0, x[x != 0])
+        probs_1 = np.power(prob_y_equals_1 * probs_x_given_1, x[x != 0])
+
+        numer_0 = np.product(probs_0)[0]
+        numer_1 = np.product(probs_1)[0]
+        denom = numer_0 + numer_1
+        print(numer_0)
+
+        py_given_x = np.zeros(2)
+        # SPAM given x
+        py_given_x[1] = numer_1 / denom
+        # NOT SPAM given x
+        py_given_x[0] = numer_0 / denom
+        
+        return np.argmax(py_given_x)
