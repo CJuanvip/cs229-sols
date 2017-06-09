@@ -53,10 +53,11 @@ class NaiveBayes:
         probs_0 = np.power(prob_y_equals_0 * probs_x_given_0, x[x != 0])
         probs_1 = np.power(prob_y_equals_1 * probs_x_given_1, x[x != 0])
 
-        numer_0 = np.product(probs_0)[0]
-        numer_1 = np.product(probs_1)[0]
+        # We call index zero because we are dealingn with a pandas DataFrame.
+        # TODO: Remove the pandas dataframes from the ML code and wrap it instead.
+        numer_0 = np.product(probs_0)#[0]
+        numer_1 = np.product(probs_1)#[0]
         denom = numer_0 + numer_1
-        print(numer_0)
 
         py_given_x = np.zeros(2)
         # SPAM given x
