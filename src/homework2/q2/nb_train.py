@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 
-
-def train(df):
+# TODO: Tuck the dataframe manipulation code up here to keep is out of the 
+# Naive Bayes code.
+def train(df_train):
     classifier = NaiveBayes(df)
 
     return classifier
