@@ -32,3 +32,15 @@ def compute_error(y, guessed_y):
     num_test_docs = y.shape[0]
 
     return np.sum(1*(guessed_y != y)) / num_test_docs
+
+
+def k_most_indicative_words(k, dfp):
+    """
+    Compute the k most indicate spam words in our dictionary.
+    """
+    log_dfp = np.log(dfp.as_matrix())
+    diff_log_dfp = log_dfp[1] - log_dfp[0]
+    sorted_frame = np.argsort(diff_log_dfp)[::-1]
+    words = dfp.columns[sorted_frame[:k]]
+
+    return list(words)
