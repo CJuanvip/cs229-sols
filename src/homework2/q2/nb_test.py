@@ -15,9 +15,9 @@ def test(model, df_test):
     # Construct the (num_test_docs x 1) vector 'output' such that the i-th entry 
     # of this vector is the predicted class (1/0) for the i-th  email (i-th row 
     # in testMatrix) in the test set.    
-    num_test_docs = test_matrix.shape[0]
+    num_test_docs = df_test.shape[0]
     output = np.zeros(num_test_docs)
-    X = test_matrix.iloc[:, 1:].as_matrix()
+    X = df_test.iloc[:, 1:].as_matrix()
 
     for i in range(num_test_docs):
         output[i] = model.classify(X[i])
