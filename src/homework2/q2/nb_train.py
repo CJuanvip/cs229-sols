@@ -43,29 +43,21 @@ class NaiveBayes:
         """
         Given a preprocessed email, classify it as SPAM or NOT SPAM.
         """
-        # TODO: Convert probabilities to logarithms to prevent numerical underflows.
-        prob_y_equals_0 = self.prior_0
-        prob_y_equals_1 = self.prior_1
+        log_prob_y_equals_0 = np.log(self.prior_0)
+        log_prob_y_equals_1 = np.log(self.prior_1)
 
         probs_x_given_0 = self.dfp[0, np.where(x != 0)]
-        probs_x_given_0 = probs_x_given_0.reshape(probs_x_given_0.shape[1])
+        log_probs_x_given_0 = np.log(probs_x_given_0.reshape(probs_x_given_0.shape[1]))
         probs_x_given_1 = self.dfp[1, np.where(x != 0)]
-        probs_x_given_1 = probs_x_given_1.reshape(probs_x_given_1.shape[1])
+        log_probs_x_given_1 = np.log(probs_x_given_1.reshape(probs_x_given_1.shape[1]))
         
-        probs_0 = np.power(prob_y_equals_0 * probs_x_given_0, x[x != 0])
-        probs_1 = np.power(prob_y_equals_1 * probs_x_given_1, x[x != 0])
+        log_probs_0 = log_prob_y_equals_0 + x[x != 0]*np.log(probs_x_given_0)
+        log_probs_1 = log_prob_y_equals_1 + x[x != 0]*np.log(probs_x_given_1)
 
-        numer_0 = np.product(probs_0)
-        numer_1 = np.product(probs_1)
-        denom = numer_0 + numer_1
-
-        py_given_x = np.zeros(2)
-        # SPAM given x
-        py_given_x[1] = numer_1 / denom
-        # NOT SPAM given x
-        py_given_x[0] = numer_0 / denom
+        posterior_0 = np.sum(log_probs_0)
+        posterior_1 = np.sum(log_probs_1)
         
-        return np.argmax(py_given_x)
+        return np.argmax((posterior_0, posterior_1))
 
 
     def to_dataframe(self):
