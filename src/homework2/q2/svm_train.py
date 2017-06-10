@@ -48,7 +48,7 @@ class SVM:
 
         # lambda
         lam = 1 / (64 * num_train_docs)
-        alpha = 1e-9 * np.ones(num_train_docs)
+        alpha = np.zeros(num_train_docs)
         average_alpha = np.zeros(num_train_docs)
 
         t = 0
@@ -92,6 +92,6 @@ class SVM:
                        - 2 * gram_test) / (2 * np.power(tau, 2)))
 
         predictions = Ktest.dot(alpha)
-        #predictions = 2 * (predictions > 0) - 1
+        predictions = 2 * (predictions > 0) - 1
 
         return predictions
