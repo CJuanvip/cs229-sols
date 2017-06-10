@@ -6,8 +6,6 @@ def test(model, df_test):
     # Make y be a vector of +/-1 labels and X be a {0, 1} matrix.
     Xtest = 1 * (df_test.as_matrix()[:,1:] > 0)
     ytest = 2 * df_test.as_matrix()[:,0] - 1
-
-    num_test_docs = df_test.shape[0]
     # Assume svm_train.py has just been executed, and the model trained
     # by your classifier is in memory through that execution. You can also assume 
     # that the columns in the test set are arranged in exactly the same way as for the
@@ -25,11 +23,7 @@ def test(model, df_test):
     # entry of this vector is positive if the predicted class is 1 and negative if
     # the predicted class is -1 for the i-th email (i-th row in Xtest) in the test
     # set.
-    predictions = np.zeros(num_test_docs)
-    for i in range(num_test_docs):
-        predictions[i] = model.classify(X[i])
-
-    return predictions
+    return model.classify(Xtest)
 
 
 def compute_error(y, predicted_y):
