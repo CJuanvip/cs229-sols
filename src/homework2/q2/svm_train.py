@@ -38,9 +38,9 @@ class SVM:
         ytrain = (2 * y - 1).T
 
         num_train_docs = Xtrain.shape[0]
-        num_tokens = Xtrain.shape[1]
+        num_tokens     = Xtrain.shape[1]
         Xtrain_squared = np.sum(Xtrain * Xtrain, axis=1).reshape((num_train_docs, 1))
-        gram_train = np.dot(Xtrain, Xtrain.T)
+        gram_train     = np.dot(Xtrain, Xtrain.T)
         # Vectorized Ktrain.
         Ktrain = np.exp(-(np.tile(Xtrain_squared,   (1, num_train_docs))
                         + np.tile(Xtrain_squared.T, (num_train_docs, 1))
@@ -59,7 +59,6 @@ class SVM:
             margin = ytrain[idx] * Ktrain[idx, :].dot(alpha)
             grad = -(margin < 1) * ytrain[idx] * Ktrain[:, idx] + \
                    num_train_docs * lam * (Ktrain[:, idx] * alpha[idx])
-            print(margin < 1)
             eta = 1.0 / np.sqrt(t)
             alpha = alpha - eta * grad
             average_alpha = average_alpha + alpha
@@ -69,25 +68,22 @@ class SVM:
         self.Xtrain = Xtrain
         self.yTrain = ytrain
         self.Ktrain = Ktrain
-        self._alpha = average_alpha
+        self.alpha  = average_alpha
         self.tau    = tau
         self.lam    = lam
 
-    @property
-    def alpha(self):
-        return self._alpha
 
     def classify(self, X):
         """
         Classify a matrix of testing data.
         """
-        num_test_docs = X.shape[0]
+        num_test_docs  = X.shape[0]
         num_train_docs = self.Xtrain.shape[0]
-        alpha = self.alpha
-        tau = self.tau
+        alpha  = self.alpha
+        tau    = self.tau
         Xtrain = self.Xtrain
-        Xtest = 1 * (X > 0)
-        Xtest_squared = np.sum(Xtest * Xtest, axis=1).reshape((num_test_docs, 1))
+        Xtest  = 1 * (X > 0)
+        Xtest_squared  = np.sum(Xtest  * Xtest,  axis=1).reshape((num_test_docs, 1))
         Xtrain_squared = np.sum(Xtrain * Xtrain, axis=1).reshape((num_train_docs, 1))
         gram_test = np.dot(Xtest, Xtrain.T)
         # Vectorized Ktest.
@@ -95,7 +91,7 @@ class SVM:
                        + np.tile(Xtrain_squared.T, (num_test_docs, 1))
                        - 2 * gram_test) / (2 * np.power(tau, 2)))
 
-        predictions = Ktest * alpha
-        predictions = 2 * (predictions > 0) - 1
+        predictions = Ktest.dot(alpha)
+        #predictions = 2 * (predictions > 0) - 1
 
         return predictions

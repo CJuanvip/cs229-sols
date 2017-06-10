@@ -5,7 +5,6 @@ import pandas as pd
 def test(model, df_test):
     # Make y be a vector of +/-1 labels and X be a {0, 1} matrix.
     Xtest = 1 * (df_test.as_matrix()[:,1:] > 0)
-    ytest = 2 * df_test.as_matrix()[:,0] - 1
     # Assume svm_train.py has just been executed, and the model trained
     # by your classifier is in memory through that execution. You can also assume 
     # that the columns in the test set are arranged in exactly the same way as for the
