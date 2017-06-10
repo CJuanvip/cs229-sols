@@ -48,20 +48,19 @@ class SVM:
 
         # lambda
         lam = 1 / (64 * num_train_docs)
-        alpha = np.zeros(num_train_docs)
+        alpha = np.zeros(num_train_docs) #1e-7 * np.ones(num_train_docs)
         average_alpha = np.zeros(num_train_docs)
 
         t = 0
-        for _ in range(max_iters):
-            for _ in range(num_train_docs):
-                t += 1
-                idx = np.random.randint(num_train_docs)
-                margin = ytrain[idx] * Ktrain[idx, :].dot(alpha)
-                grad = -(margin < 1) * ytrain[idx] * Ktrain[:, idx] + \
-                       num_train_docs * lam * Ktrain[:, idx].dot(alpha[idx])
-                eta = 1 / np.sqrt(t)
-                alpha = alpha - eta * grad
-                average_alpha = average_alpha + alpha
+        for _ in range(max_iters * num_train_docs):
+            t += 1
+            idx = np.random.randint(num_train_docs)
+            margin = ytrain[idx] * Ktrain[idx, :] * alpha
+            grad = -(margin < 1) * ytrain[idx] * Ktrain[:, idx] + \
+                   num_train_docs * lam * (Ktrain[:, idx] * alpha[idx])
+            eta = 1 / np.sqrt(t)
+            alpha = alpha - eta * grad
+            average_alpha = average_alpha + alpha
 
         average_alpha = average_alpha / (max_iters * num_train_docs)
 
