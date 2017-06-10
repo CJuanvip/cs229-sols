@@ -57,7 +57,7 @@ class SVM:
             idx = np.random.randint(num_train_docs)
             # margin = ytrain[idx] * Ktrain.T[:, idx] * alpha
             margin = ytrain[idx] * Ktrain[idx, :].dot(alpha)
-            grad = -(margin < 1) * ytrain[idx] * Ktrain[:, idx] + \
+            grad = -((margin < 1) * ytrain[idx] * Ktrain[:, idx]) + \
                    num_train_docs * lam * (Ktrain[:, idx] * alpha[idx])
             eta = 1.0 / np.sqrt(t)
             alpha = alpha - eta * grad
