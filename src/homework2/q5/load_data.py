@@ -23,8 +23,8 @@ def load_dataset(csv_handle_tr, csv_handle_te):
     training_data = read_csv(csv_handle_tr)
     testing_data = read_csv(csv_handle_te)
 
-    # In order for the testing and training data to appear valid, it should appear
-    # to come from the data data set. So it necessarily must have the same number of
+    # For the testing and training data to appear valid, it should appear
+    # to come from the data set. Necessarily it must have the same number of
     # columns and the same column labels.
     if (training_data.shape[1] != testing_data.shape[1]):
         raise ValueError(

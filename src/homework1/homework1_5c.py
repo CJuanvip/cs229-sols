@@ -69,7 +69,7 @@ class SpectrumModel():
         the ith training example. Each column j is the estimate of relative flux by estimator
         i for input value j.
         """
-        # First try treating x as a vector. If this succeeds we are evaluating pointwise.
+        # First, try treating x as a vector. If this succeeds we are evaluating pointwise.
         rows = len(self._spectrums)
         try:
             cols = len(x)

@@ -4,14 +4,15 @@ import find_best_threshold as fbt
 
 def random_booster(X, y, T):
     """
-    The function ``random_booster`` usses random thresholds and indices to train a 
+    The function ``random_booster`` uses random thresholds and indices to train a 
     classifier. It performs ``T`` rounds of boosted decision stumps to classify 
-    the data ``X``, which is an m-by-n matrix of m training examples in dimension n.
+    the data ``X``, which is an m-by-n matrix of m training examples of dimension n.
     
     The returned parameters are ``theta``, the parameter vector in ``T`` dimensions,
     the feature_inds, which are indices of the features (a ``T``-dimensional vector
     taking values in ``{1, 2, ..., n}``), and ``thresholds``, which are real-valued
-    thresholds. The resulting classifier may be computed on an n-dimensional
+    thresholds. The resulting classifier may be computed on an n-dimensional training
+    example.
     ``
     theta' * sgn(x(feature_inds) - thresholds)
     ``
@@ -24,7 +25,7 @@ def random_booster(X, y, T):
     feature_indices = np.zeros(T, dtype='int')
     thresholds = np.zeros(T)
 
-    # We use floor instead of ceil because we are indexing form zero, 
+    # We use floor instead of ceil because we are indexing from zero, 
     # whereas MATLAB indexes from one.
     for t in range(T):
         index_t = int(np.floor(cols * np.random.random()))

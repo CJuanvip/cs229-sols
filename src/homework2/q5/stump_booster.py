@@ -4,9 +4,9 @@ import find_best_threshold as fbt
 
 def stump_booster(X, y, T):
     """
-    The function ``stump_booster`` Uses boosted decision stumps to train a classifier.
+    The function ``stump_booster`` uses boosted decision stumps to train a classifier.
     It performs ``T`` rounds of boosted decision stumps to classify the data ``X``,
-    which is an m-by-n matrix of m training examples in dimension n,
+    which is an m-by-n matrix of m training examples of dimension n,
     to match ``y``.
 
     The returned parameters are ``theta``, the parameter vector in ``T`` dimensions,
@@ -18,7 +18,7 @@ def stump_booster(X, y, T):
     theta' * sign(x(feature_inds) - thresholds).
     ``
     The resulting predictions may be computed simultaneously on an
-    n-dimensional dataset, represented as an m-by-n matrix ``X``, by
+    n-dimensional data set, represented as an m-by-n matrix ``X``, by
 
     ``
     sign(X(:, feature_inds) - repmat(thresholds', m, 1)) * theta.

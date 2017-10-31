@@ -36,7 +36,7 @@ def compute_error(y, guessed_y):
 
 def k_most_indicative_words(k, dfp):
     """
-    Compute the k most indicate spam words in our dictionary.
+    Compute the k most indicative spam words in our dictionary.
     """
     log_dfp = np.log(dfp.as_matrix())
     diff_log_dfp = log_dfp[1] - log_dfp[0]

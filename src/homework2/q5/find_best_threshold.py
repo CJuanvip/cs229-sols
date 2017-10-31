@@ -3,7 +3,7 @@ import numpy as np
 
 def find_best_threshold(X, y, p_dist):
     """
-    Findices the best threshold for the given data.
+    Find the best threshold for the given data.
 
     The function ``find_best_threshold`` returns a threshold
     ``thresh`` and index ``ind`` that gives the best thresholded classifier for the

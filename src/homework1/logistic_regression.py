@@ -39,7 +39,7 @@ def logistic_regression(X, y, epsilon, max_iters):
     mm = X.shape[0]
     nn = X.shape[1]
 
-    # The cost of the ith iteration of newton-raphson.
+    # The cost of the ith iteration of Newton-Raphson.
     cost = np.zeros(max_iters)
     theta = np.zeros(nn)
 

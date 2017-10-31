@@ -2,7 +2,7 @@ import numpy            as np
 import scipy.io.wavfile as wav
 
 
-# The sampling freequency of the audio data.
+# The sampling frequency of the audio data.
 Fs = 11025
 
 
